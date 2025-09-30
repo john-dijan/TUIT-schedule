@@ -130,15 +130,25 @@
 
 <div id="schedule-info">Yuklanmoqda...</div>
 
-<!-- Trigger Button -->
-<div class="button" id="openModalBtn">📋 Darslar jadvalini ko'rish</div>
+<!-- Trigger Buttons -->
+<div class="button" id="openTodayModalBtn">📅 Bugungi darslar jadvalini ko'rish</div>
+<div class="button" id="openTomorrowModalBtn">📅 Ertangi darslar jadvalini ko'rish</div>
 
-<!-- Modal -->
+<!-- Modal for Today's Schedule -->
 <div id="scheduleModal" class="modal">
   <div class="modal-content">
     <span class="modal-close" id="closeModalBtn">&times;</span>
     <h2 id="kun">📅 Bugungi darslar jadvali</h2>
     <div id="modalContent">Yuklanmoqda...</div>
+  </div>
+</div>
+
+<!-- Modal for Tomorrow's Schedule -->
+<div id="tomorrowModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="closeTomorrowModalBtn">&times;</span>
+    <h2>📅 Ertangi darslar jadvali</h2>
+    <div id="tomorrowContent">Yuklanmoqda...</div>
   </div>
 </div>
 
@@ -321,6 +331,7 @@
   const formatTime = ([h, m]) => `${h}:${m.toString().padStart(2, '0')}`;
 
   const todaySchedule = schedule.find(day => day.dayId === currentDay);
+  const tomorrowSchedule = schedule.find(day => day.dayId === (currentDay + 1) % 7);  // Wraps around the week
 
   let message = "";
 
@@ -374,16 +385,16 @@
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    // Show schedule message
+    // Show today's schedule message
     document.getElementById("schedule-info").innerHTML = message;
 
-    // Modal functionality
+    // Modal for Today's Schedule
     const modal = document.getElementById("scheduleModal");
-    const openBtn = document.getElementById("openModalBtn");
-    const closeBtn = document.getElementById("closeModalBtn");
+    const openTodayBtn = document.getElementById("openTodayModalBtn");
+    const closeTodayBtn = document.getElementById("closeModalBtn");
     const modalContent = document.getElementById("modalContent");
 
-    openBtn.onclick = () => {
+    openTodayBtn.onclick = () => {
       modal.style.display = "block";
 
       if (todaySchedule && todaySchedule.subjects.length > 0) {
@@ -417,13 +428,58 @@
       }
     };
 
-    closeBtn.onclick = () => {
+    closeTodayBtn.onclick = () => {
       modal.style.display = "none";
     };
 
+    // Modal for Tomorrow's Schedule
+    const tomorrowModal = document.getElementById("tomorrowModal");
+    const openTomorrowBtn = document.getElementById("openTomorrowModalBtn");
+    const closeTomorrowBtn = document.getElementById("closeTomorrowModalBtn");
+    const tomorrowContent = document.getElementById("tomorrowContent");
+
+    openTomorrowBtn.onclick = () => {
+      tomorrowModal.style.display = "block";
+
+      if (tomorrowSchedule && tomorrowSchedule.subjects.length > 0) {
+        let table = `
+          <table>
+            <tr>
+              <th>#</th>
+              <th>Fan</th>
+              <th>Soat</th>
+              <th>O'qituvchi</th>
+              <th>Zoom</th>
+            </tr>
+        `;
+        tomorrowSchedule.subjects.forEach((subject, index) => {
+          const start = formatTime(subject.startTime);
+          const end = formatTime(subject.endTime);
+          table += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${subject.name}</td>
+              <td>${start} - ${end}</td>
+              <td>${subject.teacherName}</td>
+              <td><a href="${subject.zoomLink}" target="_blank">Join</a></td>
+            </tr>
+          `;
+        });
+        table += "</table>";
+        tomorrowContent.innerHTML = table;
+      } else {
+        tomorrowContent.innerHTML = "<p>Ertangi kun uchun darslar mavjud emas.</p>";
+      }
+    };
+
+    closeTomorrowBtn.onclick = () => {
+      tomorrowModal.style.display = "none";
+    };
+
     window.onclick = (event) => {
-      if (event.target === modal) {
+      if (event.target === modal || event.target === tomorrowModal) {
         modal.style.display = "none";
+        tomorrowModal.style.display = "none";
       }
     };
   });
