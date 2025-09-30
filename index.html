@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Today's Class Schedule</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f7f9fb;
+      color: #333;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 2rem;
+    }
+
+    #schedule-info {
+      background: white;
+      padding: 1.5rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    ul {
+      padding-left: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    li {
+      margin-bottom: 0.5rem;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .highlight {
+      background: #e3f2fd;
+      padding: 0.8rem;
+      border-left: 4px solid #2196f3;
+      border-radius: 5px;
+      margin: 1rem 0;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 1.5rem 0;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: #2196f3;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 999;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0,0,0,0.4);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 10% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 600px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    }
+
+    .modal-close {
+      float: right;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .modal-close:hover {
+      color: black;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    table, th, td {
+      border: 1px solid #ccc;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f1f1f1;
+    }
+  </style>
+</head>
+<body>
+
+<h1>📚 Bugungi darslar jadvali</h1>
+
+<div id="schedule-info">Yuklanmoqda...</div>
+
+<!-- Trigger Button -->
+<div class="button" id="openModalBtn">📋 Darslar jadvalini ko'rish</div>
+
+<!-- Modal -->
+<div id="scheduleModal" class="modal">
+  <div class="modal-content">
+    <span class="modal-close" id="closeModalBtn">&times;</span>
+    <h2 id="kun">📅 Bugungi darslar jadvali</h2>
+    <div id="modalContent">Yuklanmoqda...</div>
+  </div>
+</div>
+
+<script>
+  const schedule = [
+        {
+        	"dayId": 1,
+        	"dayName": "Monday",
+        	"subjects": [
+            	{
+                  "name": "Akademik yozuv",
+                  "startTime": [11, 30],
+                  "endTime": [12, 50],
+                  "teacherName": "Xaitbayeva Nazokat Adilbek kizi",
+                  "zoomLink": "https://us05web.zoom.us/j/8981873743?pwd=SHAzL1kwTmcyYm1PdkdzNVNLNUZ6dz09"
+				},
+                
+                {
+                  "name": "Akademik yozuv",
+                  "startTime": [13, 30],
+                  "endTime": [14, 50],
+                  "teacherName": "Xaitbayeva Nazokat Adilbek kizi",
+                  "zoomLink": "https://us05web.zoom.us/j/8981873743?pwd=SHAzL1kwTmcyYm1PdkdzNVNLNUZ6dz09"
+				}
+            ]
+        },
+        
+        
+        {
+        	"dayId": 2,
+            "dayName": "Tuesday",
+            "subjects": [
+            	{
+                	"name": "Xorijiy til (Ingliz tili)",
+                    "startTime": [8, 30],
+                    "endTime": [9, 50],
+                    "teacherName": "Sharipova Aziza Abdumanapovna",
+                    "zoomLink": "https://us05web.zoom.us/j/85892679148?pwd=OnPm5Uqh79jYak0E9MKU4tR2qqaawZ.1"
+                },
+            
+            
+            	{
+                	"name": "O'zbekistonning eng yangi tarixi",
+                    "startTime": [11, 30],
+                    "endTime": [12, 50],
+                    "teacherName": "Norbekov Suxrob Farxod o'g'li",
+                    "zoomLink": "https://us05web.zoom.us/j/81010061529?pwd=LVCAKMh2XK7gNeXP7bXQBIgmjgoqMk.1"
+                },
+                
+                {
+                	"name": "O'zbekistonning eng yangi tarixi",
+                    "startTime": [13, 30],
+                    "endTime": [14, 50],
+                    "teacherName": "Norbekov Suxrob Farxod o'g'li",
+                    "zoomLink": "https://us05web.zoom.us/j/81010061529?pwd=LVCAKMh2XK7gNeXP7bXQBIgmjgoqMk.1"
+                },
+                
+                {
+                	"name": "Hisob(Calculus) 1",
+                    "startTime": [15, 0],
+                    "endTime": [16, 20],
+                    "teacherName": "Tadjibayeva Shaxzadaxan Ergashevna",
+                    "zoomLink": "https://us04web.zoom.us/j/3788773149?pwd=mT1nKat54R8jFsuwteukq30zeGcHgJ.1"
+                },
+                
+                {
+                	"name": "Hisob(Calculus) 1",
+                    "startTime": [16, 30],
+                    "endTime": [18, 0],
+                    "teacherName": "Tadjibayeva Shaxzadaxan Ergashevna",
+                    "zoomLink": "https://us04web.zoom.us/j/3788773149?pwd=mT1nKat54R8jFsuwteukq30zeGcHgJ.1"
+                }
+                
+            ]
+        },
+        
+        
+        {
+        	"dayId": 3,
+        	"dayName": "Wednesday",
+        	"subjects": [
+            	{
+                	"name": "Dasturlash 1",
+                    "startTime": [11, 30],
+                    "endTime": [12, 50],
+                    "teacherName": "Saidov Samandar Muzaffarovich",
+                    "zoomLink": "https://us04web.zoom.us/j/78560589589?pwd=dTVreXJLQXFzdVNrTUp0aVpZUzdJUT09"
+                },
+                
+                {
+                	"name": "Dasturlash 1",
+                    "startTime": [13, 30],
+                    "endTime": [14, 50],
+                    "teacherName": "Saidov Samandar Muzaffarovich",
+                    "zoomLink": "https://us04web.zoom.us/j/78560589589?pwd=dTVreXJLQXFzdVNrTUp0aVpZUzdJUT09"
+                }
+            ]
+        },
+        
+        {
+        	"dayId": 4,
+        	"dayName": "Thursday",
+        	"subjects": [
+            	{
+                	"name": "Xorijiy til (Ingliz tili)",
+                    "startTime": [8, 30],
+                    "endTime": [9, 50],
+                    "teacherName": "Sharipova Aziza Abdumanapovna",
+                    "zoomLink": "https://us05web.zoom.us/j/85892679148?pwd=OnPm5Uqh79jYak0E9MKU4tR2qqaawZ.1"
+                }
+            ]
+        }, 
+        
+        {
+        	"dayId": 5,
+        	"dayName": "Friday",
+        	"subjects": [
+            	{
+                	"name": "Fizika 1",
+                    "startTime": [11, 30],
+                    "endTime": [12, 50],
+                    "teacherName": "Xalilov Sarvar Samadovich",
+                    "zoomLink": "https://us04web.zoom.us/j/7453816637?pwd=VnNTbTRMaHBBY0ZRZjhlWXcvT2dLZz09"
+                },
+                
+                {
+                	"name": "Fizika 1",
+                    "startTime": [13, 30],
+                    "endTime": [14, 50],
+                    "teacherName": "Xalilov Sarvar Samadovich",
+                    "zoomLink": "https://us04web.zoom.us/j/7453816637?pwd=VnNTbTRMaHBBY0ZRZjhlWXcvT2dLZz09"
+                }
+            ]
+        }, 
+        
+        {
+        	"dayId": 6,
+        	"dayName": "Saturday",
+        	"subjects": [
+            	{
+                	"name": "Xorijiy til (Fransuz tili)",
+                    "startTime": [8, 30],
+                    "endTime": [9, 50],
+                    "teacherName": "Nasirova Nargiza Sharafdinovna",
+                    "zoomLink": "https://us05web.zoom.us/j/5880205780?pwd=vaS1yO1xZXEKpshVc586s4nA51a6dh.1&omn=81836749399"
+                },
+                
+                {
+                	"name": "Xorijiy til (Fransuz tili)",
+                    "startTime": [10, 0],
+                    "endTime": [11, 20],
+                    "teacherName": "Nasirova Nargiza Sharafdinovna",
+                    "zoomLink": "https://us05web.zoom.us/j/5880205780?pwd=vaS1yO1xZXEKpshVc586s4nA51a6dh.1&omn=81836749399"
+                },
+                
+                {
+                	"name": "Xorijiy til (Nemis tili)",
+                    "startTime": [11, 30],
+                    "endTime": [12, 50],
+                    "teacherName": "Nishonova Nozimaxon Maxmudovna",
+                    "zoomLink": "https://us06web.zoom.us/j/3515730613?pwd=qwIFb3mhDnunBv3VbPvu6hKkEr4mew.1"
+                },
+                
+                {
+                	"name": "Xorijiy til (Nemis tili)",
+                    "startTime": [13, 30],
+                    "endTime": [14, 50],
+                    "teacherName": "Nishonova Nozimaxon Maxmudovna",
+                    "zoomLink": "https://us06web.zoom.us/j/3515730613?pwd=qwIFb3mhDnunBv3VbPvu6hKkEr4mew.1"
+                }
+            ]
+        }
+    ];
+
+  const now = new Date();
+  const currentDay = now.getDay(); // 0 (Sunday) to 6 (Saturday)
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const toMinutes = ([hour, minute]) => hour * 60 + minute;
+  const formatTime = ([h, m]) => `${h}:${m.toString().padStart(2, '0')}`;
+
+  const todaySchedule = schedule.find(day => day.dayId === currentDay);
+
+  let message = "";
+
+  if (!todaySchedule) {
+    message = "<div class='highlight'>📅 Bugunga darslar yo'q. Kuningiz hayrli o'tsin 🎉</div>";
+  } else {
+    let currentSubject = null;
+    let nextSubject = null;
+    const passedSubjects = [];
+
+    for (const subject of todaySchedule.subjects) {
+      const start = toMinutes(subject.startTime);
+      const end = toMinutes(subject.endTime);
+
+      if (currentMinutes >= end) {
+        passedSubjects.push(subject);
+      } else if (currentMinutes >= start && currentMinutes <= end) {
+        currentSubject = subject;
+      } else if (currentMinutes < start && !nextSubject) {
+        nextSubject = subject;
+      }
+    }
+
+    // 1. Passed classes
+    if (passedSubjects.length > 0) {
+      message += "<strong>✅ Bugungi o'tilgan fanlar:</strong><ul>";
+      for (const subject of passedSubjects) {
+        const time = formatTime(subject.endTime);
+        message += `<li>${subject.name} <small>(tugagan vaqti: ${time})</small></li>`;
+      }
+      message += "</ul><hr>";
+    }
+
+    // 2. Current or next
+    if (currentSubject) {
+      message += `<div class="highlight">
+        🔵 <strong>Hozirgi fan:</strong> ${currentSubject.name}<br>
+        👨‍🏫 <strong>O'qituvchi:</strong> ${currentSubject.teacherName}<br>
+        🔗 <a href="${currentSubject.zoomLink}" target="_blank">Zoomga o'tish</a>
+      </div>`;
+    } else if (nextSubject) {
+      const formattedTime = formatTime(nextSubject.startTime);
+      message += `<div class="highlight">
+        🕓 <strong>Keyingi fan:</strong> ${nextSubject.name} soat ${formattedTime} da<br>
+        👨‍🏫 <strong>O'qituvchi:</strong> ${nextSubject.teacherName}<br>
+        🔗 <a href="${nextSubject.zoomLink}" target="_blank">Zoomga o'tish</a>
+      </div>`;
+    } else {
+      message += `<div class="highlight">🎉 <strong>Bugungi dars jadvalidagi barcha fanlar tugadi. 🙌</div>`;
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Show schedule message
+    document.getElementById("schedule-info").innerHTML = message;
+
+    // Modal functionality
+    const modal = document.getElementById("scheduleModal");
+    const openBtn = document.getElementById("openModalBtn");
+    const closeBtn = document.getElementById("closeModalBtn");
+    const modalContent = document.getElementById("modalContent");
+
+    openBtn.onclick = () => {
+      modal.style.display = "block";
+
+      if (todaySchedule && todaySchedule.subjects.length > 0) {
+        let table = `
+          <table>
+            <tr>
+              <th>#</th>
+              <th>Fan</th>
+              <th>Soat</th>
+              <th>O'qituvchi</th>
+              <th>Zoom</th>
+            </tr>
+        `;
+        todaySchedule.subjects.forEach((subject, index) => {
+          const start = formatTime(subject.startTime);
+          const end = formatTime(subject.endTime);
+          table += `
+            <tr>
+              <td>${index + 1}</td>
+              <td>${subject.name}</td>
+              <td>${start} - ${end}</td>
+              <td>${subject.teacherName}</td>
+              <td><a href="${subject.zoomLink}" target="_blank">Join</a></td>
+            </tr>
+          `;
+        });
+        table += "</table>";
+        modalContent.innerHTML = table;
+      } else {
+        modalContent.innerHTML = "<p>Bugungi kun uchun darslar mavjud emas.</p>";
+      }
+    };
+
+    closeBtn.onclick = () => {
+      modal.style.display = "none";
+    };
+
+    window.onclick = (event) => {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    };
+  });
+</script>
+
+</body>
+</html>
