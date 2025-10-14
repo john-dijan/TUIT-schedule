@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Bugungi darslar jadvali</title>
   <style>
     body {
@@ -21,11 +21,19 @@
       font-size: 1.8rem;
     }
 
+    #countdown {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #d32f2f;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
     #schedule-info {
       background: white;
       padding: 1.5rem;
       border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
       font-size: 1rem;
     }
 
@@ -83,7 +91,7 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.4);
+      background-color: rgba(0, 0, 0, 0.4);
     }
 
     .modal-content {
@@ -93,7 +101,7 @@
       border-radius: 10px;
       width: 90%;
       max-width: 600px;
-      box-shadow: 0 0 15px rgba(0,0,0,0.3);
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
     }
 
     .modal-close {
@@ -115,11 +123,14 @@
       font-size: 0.9rem;
     }
 
-    table, th, td {
+    table,
+    th,
+    td {
       border: 1px solid #ccc;
     }
 
-    th, td {
+    th,
+    td {
       padding: 10px;
       text-align: left;
     }
@@ -173,38 +184,41 @@
   </style>
 </head>
 <body>
+  <marquee>
+    <h1>
+      Diqqat! Ushbu darslar jadvali faqatgina Dasturiy Injinering 2025 masofaviy
+      ta'limdagilar uchun
+    </h1>
+  </marquee>
 
-<marquee>
-	<h1>Diqqat! Ushbu darslar jadvali faqatgina Dasturiy Injinering 2025 masofaviy ta'limdagilar uchun</h1>
-</marquee>
-	
-<h1>📚 Bugungi darslar jadvali</h1>
+  <h1>📚 Bugungi darslar jadvali</h1>
 
-<div id="schedule-info">Yuklanmoqda...</div>
+  <!-- Added countdown display -->
+  <div id="schedule-info">Yuklanmoqda...</div>
 
-<!-- Trigger Buttons -->
-<div class="button" id="openTodayModalBtn">📅 Bugungi darslar jadvalini ko'rish</div>
-<div class="button" id="openTomorrowModalBtn">📅 Ertangi darslar jadvalini ko'rish</div>
+  <!-- Trigger Buttons -->
+  <div class="button" id="openTodayModalBtn">📅 Bugungi darslar jadvalini ko'rish</div>
+  <div class="button" id="openTomorrowModalBtn">📅 Ertangi darslar jadvalini ko'rish</div>
 
-<!-- Modal for Today's Schedule -->
-<div id="scheduleModal" class="modal">
-  <div class="modal-content">
-    <span class="modal-close" id="closeModalBtn">&times;</span>
-    <h2 id="kun">📅 Bugungi darslar jadvali</h2>
-    <div id="modalContent">Yuklanmoqda...</div>
+  <!-- Modal for Today's Schedule -->
+  <div id="scheduleModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" id="closeModalBtn">&times;</span>
+      <h2 id="kun">📅 Bugungi darslar jadvali</h2>
+      <div id="modalContent">Yuklanmoqda...</div>
+    </div>
   </div>
-</div>
 
-<!-- Modal for Tomorrow's Schedule -->
-<div id="tomorrowModal" class="modal">
-  <div class="modal-content">
-    <span class="modal-close" id="closeTomorrowModalBtn">&times;</span>
-    <h2>📅 Ertangi darslar jadvali</h2>
-    <div id="tomorrowContent">Yuklanmoqda...</div>
+  <!-- Modal for Tomorrow's Schedule -->
+  <div id="tomorrowModal" class="modal">
+    <div class="modal-content">
+      <span class="modal-close" id="closeTomorrowModalBtn">&times;</span>
+      <h2>📅 Ertangi darslar jadvali</h2>
+      <div id="tomorrowContent">Yuklanmoqda...</div>
+    </div>
   </div>
-</div>
-
-<script>
+  
+  <script>
   const schedule = [
         {
         	"dayId": 1,
@@ -391,71 +405,126 @@
         }
     ];
 
-  const now = new Date();
-  const currentDay = now.getDay(); // 0 (Sunday) to 6 (Saturday)
-  const currentMinutes = now.getHours() * 60 + now.getMinutes();
-
   const toMinutes = ([hour, minute]) => hour * 60 + minute;
   const formatTime = ([h, m]) => `${h}:${m.toString().padStart(2, '0')}`;
 
-  const todaySchedule = schedule.find(day => day.dayId === currentDay);
-  const tomorrowSchedule = schedule.find(day => day.dayId === (currentDay + 1) % 7);  // Wraps around the week
+  function updateSchedule() {
+    const now = new Date();
+    const currentDay = now.getDay(); // 0 (Sun) to 6 (Sat)
+    const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-  let message = "";
+    // Sunday (0) in your data is not included, so map Sunday to dayId 7 or 0? 
+    // Your data starts from Monday as dayId 1 to Saturday dayId 6
+    // So let's map Sunday(0) to 7 or 0 and handle it:
+    // To keep consistent, if currentDay==0, let's show no classes (or adjust)
+    const dayId = currentDay === 0 ? 7 : currentDay;
 
-  if (!todaySchedule) {
-    message = "<div class='highlight'>📅 Bugunga darslar yo'q. Kuningiz hayrli o'tsin 🎉</div>";
-  } else {
-    let currentSubject = null;
-    let nextSubject = null;
-    const passedSubjects = [];
+    const todaySchedule = schedule.find(day => day.dayId === dayId);
+    const tomorrowDayId = (dayId === 6) ? 1 : dayId + 1;
+    const tomorrowSchedule = schedule.find(day => day.dayId === tomorrowDayId);
 
-    for (const subject of todaySchedule.subjects) {
-      const start = toMinutes(subject.startTime);
-      const end = toMinutes(subject.endTime);
+    let message = "";
 
-      if (currentMinutes >= end) {
-        passedSubjects.push(subject);
-      } else if (currentMinutes >= start && currentMinutes <= end) {
-        currentSubject = subject;
-      } else if (currentMinutes < start && !nextSubject) {
-        nextSubject = subject;
-      }
-    }
-
-    // 1. Passed classes
-    if (passedSubjects.length > 0) {
-      message += "<strong>✅ Bugungi o'tilgan fanlar:</strong><ul>";
-      for (const subject of passedSubjects) {
-        const time = formatTime(subject.endTime);
-        message += `<li>${subject.name} <small>(tugagan vaqti: ${time})</small></li>`;
-      }
-      message += "</ul><hr>";
-    }
-
-    // 2. Current or next
-    if (currentSubject) {
-      message += `<div class="highlight">
-        🔵 <strong>Hozirgi fan:</strong> ${currentSubject.name}<br>
-        👨‍🏫 <strong>O'qituvchi:</strong> ${currentSubject.teacherName}<br>
-        ⏰ <b>Vaqt: ${currentSubject.fullTime}</b> <br>
-        🔗 <a href="${currentSubject.zoomLink}" target="_blank">Zoomga o'tish</a>
-      </div>`;
-    } else if (nextSubject) {
-      const formattedTime = formatTime(nextSubject.startTime);
-      message += `<div class="highlight">
-        🕓 <strong>Keyingi fan:</strong> ${nextSubject.name} soat ${formattedTime} da<br>
-        👨‍🏫 <strong>O'qituvchi:</strong> ${nextSubject.teacherName}<br>
-        🔗 <a href="${nextSubject.zoomLink}" target="_blank">Zoomga o'tish</a>
-      </div>`;
+    if (!todaySchedule) {
+      message = "<div class='highlight'>📅 Bugunga darslar yo'q. Kuningiz hayrli o'tsin 🎉</div>";
     } else {
-      message += `<div class="highlight">🎉 <strong>Bugungi dars jadvalidagi barcha fanlar tugadi. 🙌</div>`;
+      let currentSubject = null;
+      let nextSubject = null;
+      const passedSubjects = [];
+
+      for (const subject of todaySchedule.subjects) {
+        const start = toMinutes(subject.startTime);
+        const end = toMinutes(subject.endTime);
+
+        if (currentMinutes >= end) {
+          passedSubjects.push(subject);
+        } else if (currentMinutes >= start && currentMinutes <= end) {
+          currentSubject = subject;
+        } else if (currentMinutes < start && !nextSubject) {
+          nextSubject = subject;
+        }
+      }
+
+      // Passed classes
+      if (passedSubjects.length > 0) {
+        message += "<strong>✅ Bugungi o'tilgan fanlar:</strong><ul>";
+        for (const subject of passedSubjects) {
+          const time = formatTime(subject.endTime);
+          message += `<li>${subject.name} <small>(tugagan vaqti: ${time})</small></li>`;
+        }
+        message += "</ul><hr>";
+      }
+
+      function getCountdownText(targetTime) {
+        const now = new Date();
+        let diff = Math.floor((targetTime - now) / 1000);
+        if(diff < 0) diff = 0;
+
+        const hours = Math.floor(diff / 3600);
+        const mins = Math.floor((diff % 3600) / 60);
+        const secs = diff % 60;
+
+        return `${hours > 0 ? hours + " soat " : ""}${mins} daqiqa ${secs} soniya`;
+      }
+
+      // Calculate countdown date objects
+      const countdownElemId = "countdown-timer";
+
+      if (currentSubject) {
+        // Countdown until current subject ends
+        const endDate = new Date();
+        endDate.setHours(currentSubject.endTime[0], currentSubject.endTime[1], 0, 0);
+
+        message += `<div class="highlight">
+          🔵 <strong>Hozirgi fan:</strong> ${currentSubject.name}<br>
+          👨‍🏫 <strong>O'qituvchi:</strong> ${currentSubject.teacherName}<br>
+          ⏰ <b>Vaqt: ${currentSubject.fullTime}</b> <br>
+          🔗 <a href="${currentSubject.zoomLink}" target="_blank">Zoomga o'tish</a><br>
+          ⏳ <strong>Tugashga qolgan vaqt:</strong> <span id="${countdownElemId}">hisoblanmoqda...</span>
+        </div>`;
+
+        // Update countdown every second
+        if (window.countdownInterval) clearInterval(window.countdownInterval);
+        window.countdownInterval = setInterval(() => {
+          const countdownElem = document.getElementById(countdownElemId);
+          if (!countdownElem) return clearInterval(window.countdownInterval);
+          countdownElem.textContent = getCountdownText(endDate);
+        }, 1000);
+
+      } else if (nextSubject) {
+        // Countdown until next subject starts
+        const startDate = new Date();
+        startDate.setHours(nextSubject.startTime[0], nextSubject.startTime[1], 0, 0);
+
+        message += `<div class="highlight">
+          🕓 <strong>Keyingi fan:</strong> ${nextSubject.name} soat ${formatTime(nextSubject.startTime)} da<br>
+          👨‍🏫 <strong>O'qituvchi:</strong> ${nextSubject.teacherName}<br>
+          🔗 <a href="${nextSubject.zoomLink}" target="_blank">Zoomga o'tish</a><br>
+          ⏳ <strong>Boshlanishga qolgan vaqt:</strong> <span id="${countdownElemId}">hisoblanmoqda...</span>
+        </div>`;
+
+        if (window.countdownInterval) clearInterval(window.countdownInterval);
+        window.countdownInterval = setInterval(() => {
+          const countdownElem = document.getElementById(countdownElemId);
+          if (!countdownElem) return clearInterval(window.countdownInterval);
+          countdownElem.textContent = getCountdownText(startDate);
+        }, 1000);
+
+      } else {
+        message += `<div class="highlight">🎉 <strong>Bugungi dars jadvalidagi barcha fanlar tugadi. 🙌</strong></div>`;
+      }
     }
+
+    document.getElementById("schedule-info").innerHTML = message;
   }
 
   document.addEventListener("DOMContentLoaded", () => {
-    // Show today's schedule message
-    document.getElementById("schedule-info").innerHTML = message;
+    updateSchedule();
+
+    // Auto refresh schedule every 60 seconds (1 minute)
+    setInterval(updateSchedule, 60000);
+
+    // Your modal code unchanged, just move it here or keep as is
 
     // Modal for Today's Schedule
     const modal = document.getElementById("scheduleModal");
@@ -465,6 +534,12 @@
 
     openTodayBtn.onclick = () => {
       modal.style.display = "block";
+
+      const now = new Date();
+      let currentDay = now.getDay();
+      currentDay = currentDay === 0 ? 7 : currentDay; // Adjust for Sunday
+
+      const todaySchedule = schedule.find(day => day.dayId === currentDay);
 
       if (todaySchedule && todaySchedule.subjects.length > 0) {
         let table = `
@@ -510,6 +585,13 @@
     openTomorrowBtn.onclick = () => {
       tomorrowModal.style.display = "block";
 
+      const now = new Date();
+      let currentDay = now.getDay();
+      currentDay = currentDay === 0 ? 7 : currentDay;
+      const tomorrowDayId = (currentDay === 6) ? 1 : currentDay + 1;
+
+      const tomorrowSchedule = schedule.find(day => day.dayId === tomorrowDayId);
+
       if (tomorrowSchedule && tomorrowSchedule.subjects.length > 0) {
         let table = `
           <table>
@@ -553,6 +635,3 @@
     };
   });
 </script>
-
-</body>
-</html>
